@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TECH AI — SAP Business One</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --sap-blue: #0057B8;
+  --sap-blue-dark: #003B7A;
+  --sap-blue-mid: #0070D2;
+  --sap-accent: #00A3E0;
+  --sap-teal: #00878A;
+  --sap-green: #107E3E;
+  --sap-amber: #C35500;
+  --sap-red: #BB0000;
+  --sidebar-bg: #0A1628;
+  --sidebar-hover: rgba(255,255,255,0.07);
+  --sidebar-active: rgba(0,163,224,0.18);
+  --surface: #FFFFFF;
+  --surface-2: #F5F7FA;
+  --surface-3: #EEF1F7;
+  --border: rgba(0,0,0,0.08);
+  --text-primary: #0A1628;
+  --text-secondary: #5A677D;
+  --text-muted: #8B97A8;
+  --msg-user-bg: #0057B8;
+  --msg-ai-bg: #FFFFFF;
+  --header-h: 56px;
+  --sidebar-w: 248px;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  --transition: 0.15s ease;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ─── SIDEBAR ─────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  transition: width 0.22s ease;
+}
+
+.sidebar.collapsed { width: 0; }
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(0,163,224,0.3) 30%, rgba(0,163,224,0.3) 70%, transparent);
+}
+
+.brand {
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brand-icon {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--sap-blue) 0%, var(--sap-accent) 100%);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-icon svg { width: 18px; height: 18px; fill: white; }
+
+.brand-text { flex: 1; }
+.brand-name { font-size: 14px; font-weight: 600; color: #fff; letter-spacing: 0.2px; }
+.brand-sub { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.8px; text-transform: uppercase; }
+
+.nav-section { padding: 12px 10px 0; }
+.nav-label {
+  font-size: 10px; font-weight: 500; letter-spacing: 1px;
+  text-transform: uppercase; color: rgba(255,255,255,0.3);
+  padding: 6px 10px 4px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  color: rgba(255,255,255,0.55);
+  font-size: 13.5px;
+  font-weight: 400;
+  border: none; background: none; width: 100%; text-align: left;
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.nav-item:hover { background: var(--sidebar-hover); color: rgba(255,255,255,0.85); }
+
+.nav-item.active {
+  background: var(--sidebar-active);
+  color: #fff;
+  font-weight: 500;
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 2.5px;
+  background: var(--sap-accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.7; }
+.nav-item.active svg { opacity: 1; }
+
+.nav-count {
+  margin-left: auto;
+  background: rgba(0,163,224,0.2);
+  color: var(--sap-accent);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.user-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.user-card:hover { background: var(--sidebar-hover); }
+
+.user-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--sap-blue) 0%, var(--sap-accent) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0;
+}
+
+.user-name { font-size: 12.5px; font-weight: 500; color: rgba(255,255,255,0.75); }
+.user-role { font-size: 10.5px; color: rgba(255,255,255,0.35); }
+
+/* ─── MAIN AREA ────────────────────────────────────────── */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+/* ─── TOP BAR ──────────────────────────────────────────── */
+.topbar {
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-size: 15px; font-weight: 600;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.topbar-title-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--sap-green);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(0.85)}
+}
+
+.topbar-spacer { flex: 1; }
+
+/* ── GEMINI PILL ──────────────────────────────────────── */
+.gemini-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 12.5px; color: var(--text-secondary); font-weight: 500;
+  user-select: none;
+  position: relative;
+}
+
+.gemini-pill:hover { border-color: #8B5CF6; color: #7C3AED; }
+.gemini-pill.active { background: #F5F3FF; border-color: #C4B5FD; color: #7C3AED; }
+
+.gemini-icon { width: 15px; height: 15px; flex-shrink: 0; }
+
+.gemini-chevron { width: 10px; height: 10px; opacity: 0.6; transition: transform var(--transition); }
+.gemini-pill.open .gemini-chevron { transform: rotate(180deg); }
+
+.gemini-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  min-width: 190px;
+  z-index: 999;
+  overflow: hidden;
+  display: none;
+}
+
+.gemini-dropdown.open { display: block; animation: fadeUp 0.15s ease; }
+
+.gemini-option {
+  padding: 9px 14px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; gap: 9px;
+  border-bottom: 1px solid var(--border);
+}
+
+.gemini-option:last-child { border-bottom: none; }
+.gemini-option:hover { background: #F5F3FF; color: #7C3AED; }
+.gemini-option.selected { background: #F5F3FF; color: #7C3AED; font-weight: 500; }
+
+.gemini-option-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #8B5CF6; flex-shrink: 0;
+}
+
+.gemini-section-label {
+  padding: 7px 14px 5px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+/* ── END GEMINI PILL ──────────────────────────────────── */
+
+.db-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 12.5px; color: var(--text-secondary); font-weight: 500;
+  user-select: none;
+}
+
+.db-pill:hover { border-color: var(--sap-blue-mid); color: var(--sap-blue-mid); }
+.db-pill.active { background: #EBF5FF; border-color: #A8D0F8; color: var(--sap-blue-mid); }
+.db-pill-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); transition: var(--transition); }
+.db-pill.active .db-pill-dot { background: var(--sap-green); }
+
+.topbar-btn {
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12.5px; font-family: var(--font);
+  cursor: pointer; transition: var(--transition);
+  font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.topbar-btn:hover { background: var(--surface-2); border-color: #CBD5E1; }
+.topbar-btn svg { width: 13px; height: 13px; }
+
+/* STATUS CHIPS */
+.status-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex; gap: 10px; align-items: center;
+  flex-shrink: 0;
+}
+
+.chip {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11.5px; color: var(--text-secondary); font-weight: 500;
+}
+
+.chip-dot { width: 6px; height: 6px; border-radius: 50%; }
+.chip-dot.green { background: var(--sap-green); }
+.chip-dot.blue { background: var(--sap-blue-mid); }
+.chip-dot.amber { background: var(--sap-amber); }
+.chip-dot.red { background: var(--sap-red); }
+.chip-dot.purple { background: #8B5CF6; }
+
+.chip-divider { width: 1px; height: 14px; background: var(--border); margin: 0 2px; }
+
+/* ─── MESSAGES ─────────────────────────────────────────── */
+.messages-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scroll-behavior: smooth;
+}
+
+.messages-wrap::-webkit-scrollbar { width: 5px; }
+.messages-wrap::-webkit-scrollbar-track { background: transparent; }
+.messages-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* WELCOME */
+.welcome {
+  margin: auto;
+  text-align: center;
+  max-width: 520px;
+  padding: 20px;
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.welcome-logo {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--sap-blue) 0%, var(--sap-accent) 100%);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(0,87,184,0.25);
+}
+
+.welcome-logo svg { width: 30px; height: 30px; fill: white; }
+
+.welcome h2 {
+  font-size: 22px; font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.welcome p {
+  font-size: 14px; color: var(--text-secondary);
+  line-height: 1.6; margin-bottom: 24px;
+}
+
+.suggestion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.suggestion {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+
+.suggestion:hover {
+  border-color: var(--sap-blue-mid);
+  background: #F0F7FF;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.suggestion-icon {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+}
+
+.suggestion-text { flex: 1; }
+.suggestion-title { font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.suggestion-sub { font-size: 11px; color: var(--text-secondary); }
+
+/* MESSAGES */
+.msg-row { display: flex; gap: 10px; animation: fadeUp 0.25s ease; }
+.msg-row.user { flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  flex-shrink: 0; margin-top: 2px;
+}
+
+.msg-avatar.ai {
+  background: linear-gradient(135deg, var(--sap-blue) 0%, var(--sap-accent) 100%);
+  color: white;
+}
+
+.msg-avatar.user {
+  background: var(--surface-3);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.msg-content { max-width: 72%; display: flex; flex-direction: column; gap: 4px; }
+.msg-row.user .msg-content { align-items: flex-end; }
+
+.msg-bubble {
+  padding: 11px 15px;
+  border-radius: var(--radius-xl);
+  font-size: 14px; line-height: 1.65;
+  box-shadow: var(--shadow-sm);
+}
+
+.msg-bubble.ai {
+  background: var(--msg-ai-bg);
+  border: 1px solid var(--border);
+  border-top-left-radius: 4px;
+  color: var(--text-primary);
+}
+
+.msg-bubble.user {
+  background: var(--msg-user-bg);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.msg-bubble p { margin-bottom: 0.5em; }
+.msg-bubble p:last-child { margin-bottom: 0; }
+.msg-bubble strong { font-weight: 600; }
+.msg-bubble code {
+  background: rgba(0,0,0,0.06);
+  padding: 1px 5px; border-radius: 4px;
+  font-family: var(--mono); font-size: 12.5px;
+}
+
+.msg-bubble.user code { background: rgba(255,255,255,0.2); }
+
+.msg-bubble pre {
+  background: #0F172A;
+  color: #E2E8F0;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+/* DATA TABLE inside message */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 12.5px; margin: 8px 0;
+}
+
+.data-table th {
+  background: var(--surface-3);
+  padding: 7px 10px;
+  text-align: left; font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.data-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--surface-2); }
+
+.amount { font-family: var(--mono); font-size: 12.5px; }
+.badge-status {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 20px;
+  font-size: 11px; font-weight: 500; gap: 4px;
+}
+
+.badge-open { background: #EBF5FF; color: #1564BB; }
+.badge-closed { background: #ECFDF5; color: #065F46; }
+.badge-pending { background: #FFFBEB; color: #92400E; }
+
+/* chart embed */
+.mini-chart { margin: 10px 0; }
+.chart-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.chart-bar-label { font-size: 11.5px; color: var(--text-secondary); min-width: 60px; text-align: right; }
+.chart-bar-track { flex: 1; height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden; }
+.chart-bar-fill { height: 100%; background: linear-gradient(to right, var(--sap-blue), var(--sap-accent)); border-radius: 4px; transition: width 0.6s ease; }
+.chart-bar-value { font-size: 11.5px; font-family: var(--mono); color: var(--text-secondary); min-width: 65px; }
+
+.engine-label {
+  font-size: 10.5px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 4px;
+  font-family: var(--mono);
+}
+
+.engine-label-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sap-green); }
+
+.msg-time { font-size: 10.5px; color: var(--text-muted); padding: 0 4px; }
+
+/* TYPING */
+.typing-bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  border-top-left-radius: 4px;
+  padding: 13px 18px;
+  display: flex; align-items: center; gap: 5px;
+  box-shadow: var(--shadow-sm);
+}
+
+.typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text-muted);
+  animation: typingBounce 1.3s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typingBounce {
+  0%,60%,100%{transform:translateY(0);opacity:0.4}
+  30%{transform:translateY(-4px);opacity:1}
+}
+
+/* ─── INPUT ────────────────────────────────────────────── */
+.input-area {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px 14px;
+  flex-shrink: 0;
+}
+
+.input-wrap {
+  display: flex; align-items: flex-end; gap: 10px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 10px 10px 10px 16px;
+  transition: var(--transition);
+}
+
+.input-wrap:focus-within {
+  border-color: var(--sap-blue-mid);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(0,112,210,0.08);
+}
+
+.input-textarea {
+  flex: 1; border: none; background: none; outline: none;
+  font-family: var(--font); font-size: 14px; color: var(--text-primary);
+  resize: none; max-height: 120px; line-height: 1.5;
+  padding: 1px 0;
+}
+
+.input-textarea::placeholder { color: var(--text-muted); }
+
+.input-actions { display: flex; gap: 6px; align-items: flex-end; }
+
+.btn-send {
+  width: 34px; height: 34px;
+  background: var(--sap-blue);
+  border: none; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-send:hover:not(:disabled) { background: var(--sap-blue-dark); transform: scale(1.03); }
+.btn-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-send svg { width: 15px; height: 15px; fill: white; }
+
+.input-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 4px 0;
+}
+
+.input-hint { font-size: 11px; color: var(--text-muted); }
+.input-hint kbd {
+  background: var(--surface-3); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 5px; font-family: var(--mono);
+  font-size: 10px;
+}
+
+/* ─── RIGHT PANEL ──────────────────────────────────────── */
+.right-panel {
+  width: 256px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+}
+
+.panel-header {
+  height: var(--header-h);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  font-size: 12.5px; font-weight: 600; color: var(--text-secondary);
+  letter-spacing: 0.3px; text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.panel-toggle-btn {
+  width: 26px; height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-2);
+  cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.panel-toggle-btn:hover { background: var(--surface-3); border-color: #CBD5E1; }
+.panel-toggle-btn svg { width: 13px; height: 13px; stroke: var(--text-muted); transition: var(--transition); }
+
+.right-panel.collapsed { width: 44px; }
+.right-panel.collapsed .panel-body { display: none; }
+.right-panel.collapsed .panel-header-label { display: none; }
+.right-panel { transition: width 0.22s ease; overflow: hidden; }
+
+.panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+
+.kpi-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.kpi-card:hover { border-color: #A8D0F8; background: #F0F7FF; }
+
+.kpi-label { font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.3px; margin-bottom: 4px; text-transform: uppercase; }
+.kpi-value { font-size: 20px; font-weight: 600; color: var(--text-primary); font-family: var(--mono); }
+.kpi-delta {
+  font-size: 11px; font-weight: 500;
+  display: flex; align-items: center; gap: 3px; margin-top: 3px;
+}
+.kpi-delta.up { color: var(--sap-green); }
+.kpi-delta.down { color: var(--sap-red); }
+
+.section-title {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  letter-spacing: 0.8px; text-transform: uppercase;
+  margin: 16px 0 8px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.quick-q {
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12.5px; color: var(--text-secondary);
+  cursor: pointer; transition: var(--transition);
+  margin-bottom: 6px; line-height: 1.4;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.quick-q:hover { background: #F0F7FF; border-color: #A8D0F8; color: var(--sap-blue); }
+.quick-q-icon { font-size: 14px; flex-shrink: 0; }
+
+.panel-divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+.activity-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  margin-top: 5px; flex-shrink: 0;
+}
+
+.activity-text { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+.activity-time { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; font-family: var(--mono); }
+
+/* ─── DASHBOARD ────────────────────────────────────────── */
+#dashboard-view {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  background: var(--surface-2);
+  animation: fadeUp 0.3s ease;
+}
+
+#dashboard-view::-webkit-scrollbar { width: 5px; }
+#dashboard-view::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.dash-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.dash-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+.dash-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+.dash-period {
+  display: flex; gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.period-btn {
+  padding: 5px 12px; border-radius: 7px;
+  font-size: 12px; font-weight: 500;
+  border: none; background: none;
+  color: var(--text-muted); cursor: pointer; transition: var(--transition);
+  font-family: var(--font);
+}
+
+.period-btn.active {
+  background: var(--sap-blue);
+  color: #fff;
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dash-kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  cursor: default;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.dash-kpi.blue::before { background: var(--sap-blue-mid); }
+.dash-kpi.green::before { background: var(--sap-green); }
+.dash-kpi.amber::before { background: #D97706; }
+.dash-kpi.red::before { background: var(--sap-red); }
+
+.dash-kpi-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px; font-size: 16px;
+}
+
+.dash-kpi-icon.blue { background: #EBF5FF; }
+.dash-kpi-icon.green { background: #ECFDF5; }
+.dash-kpi-icon.amber { background: #FFFBEB; }
+.dash-kpi-icon.red { background: #FEF2F2; }
+
+.dash-kpi-label { font-size: 11.5px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px; }
+.dash-kpi-value { font-size: 22px; font-weight: 600; color: var(--text-primary); font-family: var(--mono); margin-bottom: 5px; }
+.dash-kpi-delta { font-size: 11.5px; font-weight: 500; display: flex; align-items: center; gap: 3px; }
+.dash-kpi-delta.up { color: var(--sap-green); }
+.dash-kpi-delta.dn { color: var(--sap-red); }
+.dash-kpi-delta.neu { color: var(--text-muted); }
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.chart-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.dash-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  overflow: hidden;
+}
+
+.dash-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dash-card-title { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+.dash-card-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+.dash-card-badge {
+  font-size: 11px; padding: 3px 9px; border-radius: 20px;
+  font-weight: 500;
+}
+
+.badge-blue { background: #EBF5FF; color: #1564BB; }
+.badge-green { background: #ECFDF5; color: #065F46; }
+.badge-amber { background: #FFFBEB; color: #92400E; }
+.badge-red { background: #FEF2F2; color: #991B1B; }
+
+.bar-chart { width: 100%; }
+
+.donut-wrap { display: flex; align-items: center; gap: 20px; }
+.donut-legend { flex: 1; }
+.legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary); }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.legend-val { margin-left: auto; font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text-primary); }
+
+.dash-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.dash-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); font-weight: 600; padding: 0 0 10px; border-bottom: 1px solid var(--border); text-align: left; }
+.dash-table td { padding: 9px 0; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+.dash-table tr:last-child td { border-bottom: none; }
+.dash-table .td-mono { font-family: var(--mono); color: var(--text-secondary); }
+.dash-table .td-rank { color: var(--text-muted); font-size: 11px; width: 24px; }
+
+.sparkline-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.sparkline-label { font-size: 12px; color: var(--text-secondary); min-width: 90px; }
+.sparkline-track { flex: 1; height: 6px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
+.sparkline-fill { height: 100%; border-radius: 3px; }
+.sparkline-val { font-size: 11.5px; font-family: var(--mono); color: var(--text-secondary); min-width: 52px; text-align: right; }
+
+.gauge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.gauge-item { text-align: center; }
+.gauge-label { font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px; }
+.gauge-value { font-size: 19px; font-weight: 600; font-family: var(--mono); color: var(--text-primary); }
+.gauge-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+.order-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+.order-row:last-child { border-bottom: none; }
+.order-id { font-family: var(--mono); font-size: 12px; color: var(--sap-blue-mid); min-width: 70px; font-weight: 500; }
+.order-customer { font-size: 12.5px; color: var(--text-primary); flex: 1; }
+.order-amount { font-family: var(--mono); font-size: 12px; color: var(--text-secondary); min-width: 80px; text-align: right; }
+.status-pill { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; font-weight: 600; min-width: 58px; text-align: center; }
+.pill-open    { background: #EBF5FF; color: #1564BB; }
+.pill-closed  { background: #ECFDF5; color: #065F46; }
+.pill-pending { background: #FFFBEB; color: #92400E; }
+.pill-partial { background: #F5F3FF; color: #5B21B6; }
+</style>
+</head>
+<body>
+
+<!-- ════════ SIDEBAR ════════ -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+    </div>
+    <div class="brand-text">
+      <div class="brand-name">TECH AI</div>
+      <div class="brand-sub">SAP Business One</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <button class="nav-item active" onclick="navClick(this,'Chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      AI Chat
+    </button>
+    <button class="nav-item" onclick="navClick(this,'Dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Modules</div>
+    <button class="nav-item" onclick="quickAsk('Show me today\'s open sales orders with totals')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Sales Orders
+      <span class="nav-count">12</span>
+    </button>
+    <button class="nav-item" onclick="quickAsk('Show open purchase orders and pending deliveries')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Purchases
+      <span class="nav-count">5</span>
+    </button>
+    <button class="nav-item" onclick="quickAsk('Show inventory levels and items below minimum stock')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Inventory
+    </button>
+    <button class="nav-item" onclick="quickAsk('Show outstanding AR invoices and overdue payments')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      Invoices
+      <span class="nav-count" style="background:rgba(187,0,0,0.18);color:#BB0000;">3</span>
+    </button>
+    <button class="nav-item" onclick="quickAsk('Show financial summary, P&L for this month')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Finance
+    </button>
+    <button class="nav-item" onclick="quickAsk('Show top 10 customers by sales this quarter')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Business Partners
+    </button>
+    <button class="nav-item" onclick="quickAsk('Generate monthly sales report with charts')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Reports
+    </button>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Settings</div>
+    <button class="nav-item" onclick="quickAsk('How do I configure SAP B1 user permissions?')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M1 12h2M21 12h2M12 1v2M12 21v2"/></svg>
+      Settings
+    </button>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">AD</div>
+      <div>
+        <div class="user-name">Admin User</div>
+        <div class="user-role">Administrator</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ════════ MAIN ════════ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="topbar-btn" id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle sidebar" style="padding:7px 9px;flex-shrink:0">
+      <svg id="sidebar-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="topbar-title">
+      <div class="topbar-title-dot"></div>
+      SAP Business One AI Assistant
+    </div>
+    <div class="topbar-spacer"></div>
+
+    <!-- ── GEMINI MODEL SELECTOR ── -->
+    <div class="gemini-pill" id="gemini-pill" onclick="toggleGeminiMenu(event)" title="Select AI Model">
+      <!-- Gemini star/sparkle icon -->
+      <svg class="gemini-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3C9 9 9 15 12 21C15 15 15 9 12 3Z" fill="#8B5CF6"/>
+        <path d="M3 12C9 9 15 9 21 12C15 15 9 15 3 12Z" fill="#A78BFA"/>
+        <circle cx="12" cy="12" r="1.8" fill="#7C3AED"/>
+      </svg>
+      <span id="gemini-label">Gemini</span>
+      <svg class="gemini-chevron" id="gemini-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      <!-- Dropdown -->
+      <div class="gemini-dropdown" id="gemini-dropdown" onclick="event.stopPropagation()">
+        <div class="gemini-section-label">Google Gemini Models</div>
+        <div class="gemini-option selected" onclick="selectGemini(event,'Gemini 2.5 Pro','#8B5CF6')">
+          <div class="gemini-option-dot" style="background:#8B5CF6"></div>
+          <div>
+            <div style="font-size:12.5px;font-weight:500">Gemini 2.5 Pro</div>
+            <div style="font-size:10.5px;color:var(--text-muted);margin-top:1px">Most capable · Reasoning</div>
+          </div>
+          <svg id="check-pro" style="margin-left:auto;width:13px;height:13px;stroke:#8B5CF6" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="gemini-option" onclick="selectGemini(event,'Gemini 2.5 Flash','#A78BFA')">
+          <div class="gemini-option-dot" style="background:#A78BFA"></div>
+          <div>
+            <div style="font-size:12.5px;font-weight:500">Gemini 2.5 Flash</div>
+            <div style="font-size:10.5px;color:var(--text-muted);margin-top:1px">Fast · Efficient</div>
+          </div>
+          <svg id="check-flash" style="margin-left:auto;width:13px;height:13px;stroke:#A78BFA;display:none" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="gemini-option" onclick="selectGemini(event,'Gemini 1.5 Pro','#C4B5FD')">
+          <div class="gemini-option-dot" style="background:#C4B5FD"></div>
+          <div>
+            <div style="font-size:12.5px;font-weight:500">Gemini 1.5 Pro</div>
+            <div style="font-size:10.5px;color:var(--text-muted);margin-top:1px">1M context · Stable</div>
+          </div>
+          <svg id="check-15pro" style="margin-left:auto;width:13px;height:13px;stroke:#C4B5FD;display:none" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="db-pill" id="db-pill" onclick="toggleDB()">
+      <div class="db-pill-dot" id="db-dot"></div>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      <span id="db-label">DB Access: Off</span>
+    </div>
+
+    <button class="topbar-btn" onclick="clearAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      Clear
+    </button>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="chip"><div class="chip-dot green"></div>LangGraph Agent</div>
+    <div class="chip"><div class="chip-dot blue"></div>Claude Sonnet 4.5</div>
+    <div class="chip"><div class="chip-dot purple"></div><span id="gemini-chip-label">Gemini 2.5 Pro</span></div>
+    <div class="chip"><div class="chip-dot blue"></div>FAISS RAG</div>
+    <div class="chip-divider"></div>
+    <div class="chip" id="db-chip"><div class="chip-dot amber"></div>DB: Disconnected</div>
+    <div class="chip-divider"></div>
+    <div class="chip" style="margin-left:auto">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span id="clock-display" style="font-family:var(--mono)">--:--:--</span>
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="messages-wrap" id="messages">
+
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      </div>
+      <h2>Hello, I'm TECH AI</h2>
+      <p>Your intelligent SAP Business One assistant. Ask me anything about sales, inventory, finance, or any SAP B1 operation — or enable Database Access to query your live data.</p>
+      <div class="suggestion-grid">
+        <div class="suggestion" onclick="quickAsk('Show me total sales for this month with chart')">
+          <div class="suggestion-icon" style="background:#EBF5FF">📊</div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">Monthly Sales</div>
+            <div class="suggestion-sub">Total revenue this month</div>
+          </div>
+        </div>
+        <div class="suggestion" onclick="quickAsk('List top 5 customers by sales amount')">
+          <div class="suggestion-icon" style="background:#ECFDF5">👥</div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">Top Customers</div>
+            <div class="suggestion-sub">Sales ranking & amounts</div>
+          </div>
+        </div>
+        <div class="suggestion" onclick="quickAsk('What items are low on stock or below minimum?')">
+          <div class="suggestion-icon" style="background:#FFFBEB">📦</div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">Low Stock Alert</div>
+            <div class="suggestion-sub">Items needing reorder</div>
+          </div>
+        </div>
+        <div class="suggestion" onclick="quickAsk('Show pending purchase orders and delivery dates')">
+          <div class="suggestion-icon" style="background:#FEF2F2">📋</div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">Pending POs</div>
+            <div class="suggestion-sub">Open purchase orders</div>
+          </div>
+        </div>
+        <div class="suggestion" onclick="quickAsk('Show profit and loss statement for this year')">
+          <div class="suggestion-icon" style="background:#F0F9FF">💰</div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">P&amp;L Summary</div>
+            <div class="suggestion-sub">This year's financials</div>
+          </div>
+        </div>
+        <div class="suggestion" onclick="quickAsk('How do I create a new sales order in SAP B1?')">
+          <div class="suggestion-icon" style="background:#F5F3FF">❓</div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">How-To Guide</div>
+            <div class="suggestion-sub">SAP B1 step-by-step help</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INPUT AREA -->
+  <div class="input-area" id="input-area">
+    <div class="input-wrap">
+      <textarea
+        id="user-input"
+        class="input-textarea"
+        rows="1"
+        placeholder="Ask about sales, inventory, invoices, or any SAP B1 operation…"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <div class="input-actions">
+        <button class="btn-send" id="send-btn" onclick="sendMessage()" title="Send (Enter)">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="input-footer">
+      <span class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</span>
+      <span class="input-hint" id="char-count" style="font-family:var(--mono)"></span>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboard-view">
+
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Business Dashboard</div>
+        <div class="dash-sub">SAP Business One — Live overview</div>
+      </div>
+      <div class="dash-period">
+        <button class="period-btn active" onclick="setPeriod(this,'Daily')">Daily</button>
+        <button class="period-btn" onclick="setPeriod(this,'Weekly')">Weekly</button>
+        <button class="period-btn" onclick="setPeriod(this,'Monthly')">Monthly</button>
+        <button class="period-btn" onclick="setPeriod(this,'Yearly')">Yearly</button>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="dash-kpi blue">
+        <div class="dash-kpi-icon blue">💰</div>
+        <div class="dash-kpi-label">Total Revenue</div>
+        <div class="dash-kpi-value" id="kpi-revenue">₹25.8L</div>
+        <div class="dash-kpi-delta up">↑ 12.4% vs prev period</div>
+      </div>
+      <div class="dash-kpi green">
+        <div class="dash-kpi-icon green">📋</div>
+        <div class="dash-kpi-label">Sales Orders</div>
+        <div class="dash-kpi-value" id="kpi-orders">142</div>
+        <div class="dash-kpi-delta up">↑ 8 new today</div>
+      </div>
+      <div class="dash-kpi amber">
+        <div class="dash-kpi-icon amber">📦</div>
+        <div class="dash-kpi-label">Low Stock Items</div>
+        <div class="dash-kpi-value" id="kpi-stock">7</div>
+        <div class="dash-kpi-delta dn">↓ 3 critical</div>
+      </div>
+      <div class="dash-kpi red">
+        <div class="dash-kpi-icon red">⚠️</div>
+        <div class="dash-kpi-label">Overdue Invoices</div>
+        <div class="dash-kpi-value" id="kpi-overdue">₹3.1L</div>
+        <div class="dash-kpi-delta dn">3 invoices overdue</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Revenue Trend</div>
+            <div class="dash-card-sub">Monthly revenue (₹ Lakhs)</div>
+          </div>
+          <span class="dash-card-badge badge-blue">This Year</span>
+        </div>
+        <svg class="bar-chart" height="160" viewBox="0 0 520 160" id="bar-svg"></svg>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Sales by Module</div>
+            <div class="dash-card-sub">Distribution this period</div>
+          </div>
+        </div>
+        <div class="donut-wrap">
+          <svg width="110" height="110" viewBox="0 0 110 110" id="donut-svg"></svg>
+          <div class="donut-legend" id="donut-legend"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row-3">
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">Top Customers</div>
+          <span class="dash-card-badge badge-green">By Revenue</span>
+        </div>
+        <table class="dash-table">
+          <thead><tr><th class="td-rank">#</th><th>Customer</th><th style="text-align:right">Sales</th></tr></thead>
+          <tbody id="top-customers-body"></tbody>
+        </table>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Inventory Status</div>
+            <div class="dash-card-sub">Stock vs minimum level</div>
+          </div>
+          <span class="dash-card-badge badge-amber">7 Low</span>
+        </div>
+        <div id="inventory-bars"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">Finance KPIs</div>
+          <span class="dash-card-badge badge-blue">This Month</span>
+        </div>
+        <div class="gauge-grid">
+          <div class="gauge-item">
+            <svg width="70" height="70" viewBox="0 0 70 70">
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#EEF1F7" stroke-width="8"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#107E3E" stroke-width="8"
+                stroke-dasharray="114 176" stroke-dashoffset="44" stroke-linecap="round"
+                transform="rotate(-90 35 35)"/>
+              <text x="35" y="40" text-anchor="middle" font-size="12" font-weight="600" fill="#0A1628">65%</text>
+            </svg>
+            <div class="gauge-label">Gross Margin</div>
+          </div>
+          <div class="gauge-item">
+            <svg width="70" height="70" viewBox="0 0 70 70">
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#EEF1F7" stroke-width="8"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#0070D2" stroke-width="8"
+                stroke-dasharray="123 176" stroke-dashoffset="44" stroke-linecap="round"
+                transform="rotate(-90 35 35)"/>
+              <text x="35" y="40" text-anchor="middle" font-size="12" font-weight="600" fill="#0A1628">70%</text>
+            </svg>
+            <div class="gauge-label">AR Collection</div>
+          </div>
+          <div class="gauge-item">
+            <svg width="70" height="70" viewBox="0 0 70 70">
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#EEF1F7" stroke-width="8"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#C35500" stroke-width="8"
+                stroke-dasharray="88 176" stroke-dashoffset="44" stroke-linecap="round"
+                transform="rotate(-90 35 35)"/>
+              <text x="35" y="40" text-anchor="middle" font-size="12" font-weight="600" fill="#0A1628">50%</text>
+            </svg>
+            <div class="gauge-label">Budget Used</div>
+          </div>
+          <div class="gauge-item">
+            <svg width="70" height="70" viewBox="0 0 70 70">
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#EEF1F7" stroke-width="8"/>
+              <circle cx="35" cy="35" r="28" fill="none" stroke="#BB0000" stroke-width="8"
+                stroke-dasharray="53 176" stroke-dashoffset="44" stroke-linecap="round"
+                transform="rotate(-90 35 35)"/>
+              <text x="35" y="40" text-anchor="middle" font-size="12" font-weight="600" fill="#0A1628">30%</text>
+            </svg>
+            <div class="gauge-label">Overdue AR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Recent Sales Orders</div>
+            <div class="dash-card-sub">Last 8 transactions</div>
+          </div>
+          <span class="dash-card-badge badge-blue">Live</span>
+        </div>
+        <div id="recent-orders"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-card-title">Purchase Orders</div>
+            <div class="dash-card-sub">Status breakdown</div>
+          </div>
+        </div>
+        <div id="po-bars"></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px">
+            <span>Total Open POs</span><span style="font-family:var(--mono);color:var(--text-primary);font-weight:600">₹8,43,200</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px">
+            <span>Avg Lead Time</span><span style="font-family:var(--mono);color:var(--text-primary);font-weight:600">6.2 days</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)">
+            <span>On-Time Delivery</span><span style="font-family:var(--mono);color:var(--sap-green);font-weight:600">87.4%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end dashboard-view -->
+
+</div>
+
+<!-- ════════ RIGHT PANEL ════════ -->
+<div class="right-panel" id="right-panel">
+  <div class="panel-header">
+    <span class="panel-header-label">Live Insights</span>
+    <button class="panel-toggle-btn" id="panel-toggle-btn" onclick="togglePanel()" title="Hide panel">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="panel-toggle-icon"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+  <div class="panel-body">
+
+    <div class="kpi-card" onclick="quickAsk('Show detailed sales breakdown for this month')">
+      <div class="kpi-label">Monthly Sales</div>
+      <div class="kpi-value">₹25,76,890</div>
+      <div class="kpi-delta up">↑ 12.4% vs last month</div>
+    </div>
+
+    <div class="kpi-card" onclick="quickAsk('Show open purchase orders total value')">
+      <div class="kpi-label">Open POs</div>
+      <div class="kpi-value">₹8,43,200</div>
+      <div class="kpi-delta up">5 orders pending</div>
+    </div>
+
+    <div class="kpi-card" onclick="quickAsk('Show overdue invoices that need follow-up')">
+      <div class="kpi-label">AR Outstanding</div>
+      <div class="kpi-value">₹3,12,450</div>
+      <div class="kpi-delta down">3 overdue invoices</div>
+    </div>
+
+    <div class="kpi-card" onclick="quickAsk('How many items are currently below minimum stock level?')">
+      <div class="kpi-label">Low Stock Items</div>
+      <div class="kpi-value">7</div>
+      <div class="kpi-delta down">↓ Needs reorder</div>
+    </div>
+
+    <div class="section-title">Quick Queries</div>
+
+    <div class="quick-q" onclick="quickAsk('Show me sales for today vs yesterday')">
+      <span class="quick-q-icon">📈</span>Today's Sales
+    </div>
+    <div class="quick-q" onclick="quickAsk('Which customers have overdue payments?')">
+      <span class="quick-q-icon">⚠️</span>Overdue Payments
+    </div>
+    <div class="quick-q" onclick="quickAsk('Top selling items this month')">
+      <span class="quick-q-icon">🏆</span>Top Products
+    </div>
+    <div class="quick-q" onclick="quickAsk('Show gross profit margin by category')">
+      <span class="quick-q-icon">💹</span>Profit Margin
+    </div>
+    <div class="quick-q" onclick="quickAsk('New business partners registered this month')">
+      <span class="quick-q-icon">🤝</span>New Partners
+    </div>
+
+    <div class="panel-divider"></div>
+    <div class="section-title">Recent Activity</div>
+
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--sap-green)"></div>
+      <div>
+        <div class="activity-text">SO-10245 delivered to C0001</div>
+        <div class="activity-time">2 min ago</div>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--sap-blue-mid)"></div>
+      <div>
+        <div class="activity-text">PO-5521 approved by manager</div>
+        <div class="activity-time">18 min ago</div>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--sap-amber)"></div>
+      <div>
+        <div class="activity-text">Item A1007 stock below minimum</div>
+        <div class="activity-time">1 hr ago</div>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot" style="background:var(--sap-red)"></div>
+      <div>
+        <div class="activity-text">Invoice INV-8812 overdue (30d)</div>
+        <div class="activity-time">3 hr ago</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const BASE_URL = 'http://127.0.0.1:8080';
+const SESSION_ID = 'sess-' + Math.random().toString(36).slice(2, 10);
+let dbAccess = false;
+let busy = false;
+
+/* ── GEMINI MODEL SELECTOR ── */
+let geminiMenuOpen = false;
+let selectedGeminiModel = 'Gemini 2.5 Pro';
+
+const CHECK_IDS = { 'Gemini 2.5 Pro': 'check-pro', 'Gemini 2.5 Flash': 'check-flash', 'Gemini 1.5 Pro': 'check-15pro' };
+
+function toggleGeminiMenu(e) {
+  e.stopPropagation();
+  geminiMenuOpen = !geminiMenuOpen;
+  const dd = document.getElementById('gemini-dropdown');
+  const pill = document.getElementById('gemini-pill');
+  const chev = document.getElementById('gemini-chevron');
+  dd.classList.toggle('open', geminiMenuOpen);
+  pill.classList.toggle('active', geminiMenuOpen);
+  chev.style.transform = geminiMenuOpen ? 'rotate(180deg)' : '';
+}
+
+function selectGemini(e, model, color) {
+  e.stopPropagation();
+  selectedGeminiModel = model;
+  document.getElementById('gemini-label').textContent = model;
+  Object.entries(CHECK_IDS).forEach(([m, id]) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (m === model) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.gemini-option').forEach(o => {
+    const txt = o.querySelector('div > div:first-child');
+    o.classList.toggle('selected', txt && txt.textContent.trim() === model);
+  });
+  document.getElementById('gemini-chip-label').textContent = model;
+  geminiMenuOpen = false;
+  document.getElementById('gemini-dropdown').classList.remove('open');
+  document.getElementById('gemini-pill').classList.remove('active');
+  document.getElementById('gemini-chevron').style.transform = '';
+}
+
+document.addEventListener('click', function() {
+  if (geminiMenuOpen) {
+    geminiMenuOpen = false;
+    document.getElementById('gemini-dropdown').classList.remove('open');
+    document.getElementById('gemini-pill').classList.remove('active');
+    document.getElementById('gemini-chevron').style.transform = '';
+  }
+});
+
+/* ── CLOCK ── */
+function updateClock() {
+  document.getElementById('clock-display').textContent = new Date().toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+/* ── DB TOGGLE ── */
+function toggleDB() {
+  dbAccess = !dbAccess;
+  document.getElementById('db-pill').classList.toggle('active', dbAccess);
+  document.getElementById('db-label').textContent = dbAccess ? 'DB Access: On' : 'DB Access: Off';
+  const chip = document.getElementById('db-chip');
+  chip.innerHTML = dbAccess
+    ? '<div class="chip-dot green"></div>DB: Connected'
+    : '<div class="chip-dot amber"></div>DB: Disconnected';
+}
+
+/* ── SIDEBAR TOGGLE ── */
+function toggleSidebar() {
+  document.querySelector('.sidebar').classList.toggle('collapsed');
+}
+
+/* ── VIEW SWITCHING ── */
+let currentView = 'chat';
+
+function navClick(el, name) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  const chatView   = document.getElementById('messages');
+  const inputArea  = document.getElementById('input-area');
+  const dashView   = document.getElementById('dashboard-view');
+  const topTitle   = document.querySelector('.topbar-title');
+
+  if (name === 'Dashboard') {
+    chatView.style.display  = 'none';
+    inputArea.style.display = 'none';
+    dashView.style.display  = 'block';
+    topTitle.innerHTML = '<div class="topbar-title-dot"></div>Business Dashboard';
+    currentView = 'dashboard';
+    buildDashboard();
+  } else {
+    chatView.style.display  = 'flex';
+    inputArea.style.display = 'block';
+    dashView.style.display  = 'none';
+    topTitle.innerHTML = '<div class="topbar-title-dot"></div>SAP Business One AI Assistant';
+    currentView = 'chat';
+    document.getElementById('user-input').focus();
+  }
+}
+
+/* ── PERIOD SELECTOR ── */
+function setPeriod(btn, period) {
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildDashboard(period);
+}
+
+/* ── DASHBOARD DATA ── */
+const DATA = {
+  Daily:   { revenue:'₹89,420', orders:12, rev_series:[42,58,35,72,61,89,54,66,78,45,83,91], labels:['9am','10','11','12','1pm','2','3','4','5','6','7','8'] },
+  Weekly:  { revenue:'₹5.4L',  orders:38, rev_series:[210,340,290,410,380,520,460,310,540,490,380,420], labels:['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12'] },
+  Monthly: { revenue:'₹25.8L', orders:142, rev_series:[18,22,19,27,24,29,21,25,31,28,26,32], labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] },
+  Yearly:  { revenue:'₹3.1Cr', orders:1840, rev_series:[240,310,280,350,410,390,450,480,520,490,560,610], labels:['2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'] },
+};
+
+const CUSTOMERS = [
+  { name:'Acme Corp',      code:'C0001', sales:'₹6,25,000' },
+  { name:'Bright Traders', code:'C0002', sales:'₹4,85,000' },
+  { name:'Zeta Supplies',  code:'C0003', sales:'₹3,75,000' },
+  { name:'Nexus Pvt Ltd',  code:'C0004', sales:'₹2,90,000' },
+  { name:'Alpha Retail',   code:'C0005', sales:'₹2,45,000' },
+];
+
+const INVENTORY = [
+  { name:'Item A1001',pct:82,color:'#107E3E' },
+  { name:'Item A1002',pct:45,color:'#D97706' },
+  { name:'Item A1007',pct:12,color:'#BB0000' },
+  { name:'Item B0034',pct:67,color:'#107E3E' },
+  { name:'Item C0012',pct:8, color:'#BB0000' },
+  { name:'Item D0098',pct:55,color:'#107E3E' },
+];
+
+const DONUT_DATA = [
+  { label:'Sales',     val:42, color:'#0070D2' },
+  { label:'Purchase',  val:24, color:'#107E3E' },
+  { label:'Inventory', val:19, color:'#D97706' },
+  { label:'Finance',   val:15, color:'#BB0000' },
+];
+
+const ORDERS = [
+  { id:'SO-10251', cust:'Acme Corp',       amt:'₹45,200', status:'Open' },
+  { id:'SO-10250', cust:'Bright Traders',  amt:'₹28,900', status:'Closed' },
+  { id:'SO-10249', cust:'Nexus Pvt Ltd',   amt:'₹17,400', status:'Pending' },
+  { id:'SO-10248', cust:'Zeta Supplies',   amt:'₹62,800', status:'Partial' },
+  { id:'SO-10247', cust:'Alpha Retail',    amt:'₹9,300',  status:'Closed' },
+  { id:'SO-10246', cust:'Acme Corp',       amt:'₹33,500', status:'Open' },
+  { id:'SO-10245', cust:'Nexus Pvt Ltd',   amt:'₹21,700', status:'Closed' },
+  { id:'SO-10244', cust:'Bright Traders',  amt:'₹14,850', status:'Open' },
+];
+
+const PO_STATUS = [
+  { label:'Open',      count:5,  pct:38, color:'#0070D2' },
+  { label:'Approved',  count:4,  pct:31, color:'#107E3E' },
+  { label:'Pending',   count:2,  pct:15, color:'#D97706' },
+  { label:'Delivered', count:2,  pct:16, color:'#8B97A8' },
+];
+
+function buildDashboard(period) {
+  period = period || document.querySelector('.period-btn.active')?.textContent || 'Monthly';
+  const d = DATA[period] || DATA.Monthly;
+  document.getElementById('kpi-revenue').textContent = d.revenue;
+  document.getElementById('kpi-orders').textContent  = d.orders;
+  buildBarChart(d.rev_series, d.labels);
+  buildDonut();
+  buildCustomers();
+  buildInventoryBars();
+  buildRecentOrders();
+  buildPOBars();
+}
+
+function buildBarChart(series, labels) {
+  const svg = document.getElementById('bar-svg');
+  const W = 520, H = 160, pad = { t:10, r:10, b:28, l:32 };
+  const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+  const max = Math.max(...series);
+  const bW = Math.floor(cW / series.length) - 6;
+  let html = '';
+  series.forEach((v, i) => {
+    const bH = Math.round((v / max) * cH);
+    const x  = pad.l + i * (cW / series.length) + 3;
+    const y  = pad.t + cH - bH;
+    const isMax = v === max;
+    html += `<rect x="${x}" y="${y}" width="${bW}" height="${bH}" rx="3" fill="${isMax ? '#0070D2' : '#B5D4F4'}" />`;
+    if (labels[i]) {
+      html += `<text x="${x + bW/2}" y="${H - 8}" text-anchor="middle" font-size="9" fill="#8B97A8" font-family="DM Mono, monospace">${labels[i]}</text>`;
+    }
+  });
+  const ySteps = 4;
+  for (let i = 0; i <= ySteps; i++) {
+    const yv = Math.round((max / ySteps) * i);
+    const yp = pad.t + cH - Math.round((yv / max) * cH);
+    html += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${yp}" y2="${yp}" stroke="#EEF1F7" stroke-width="1"/>`;
+    html += `<text x="${pad.l - 4}" y="${yp + 4}" text-anchor="end" font-size="9" fill="#8B97A8" font-family="DM Mono, monospace">${yv}</text>`;
+  }
+  svg.innerHTML = html;
+}
+
+function buildDonut() {
+  const cx = 55, cy = 55, r = 38, strokeW = 14;
+  const total = DONUT_DATA.reduce((s,d) => s + d.val, 0);
+  const circ  = 2 * Math.PI * r;
+  let offset  = 0;
+  let pathHTML = '';
+  let legendHTML = '';
+  DONUT_DATA.forEach(d => {
+    const dash = (d.val / total) * circ;
+    const gap  = circ - dash;
+    pathHTML += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}" stroke-width="${strokeW}" stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}" stroke-dashoffset="${(circ - offset * circ / total - circ/4).toFixed(2)}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    legendHTML += `<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span>${d.label}</span><span class="legend-val">${d.val}%</span></div>`;
+    offset += d.val;
+  });
+  pathHTML += `<circle cx="${cx}" cy="${cy}" r="${r-strokeW/2}" fill="white"/>
+    <text x="${cx}" y="${cy-5}" text-anchor="middle" font-size="14" font-weight="600" fill="#0A1628">${total}%</text>
+    <text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="8" fill="#8B97A8">Total</text>`;
+  document.getElementById('donut-svg').innerHTML = pathHTML;
+  document.getElementById('donut-legend').innerHTML = legendHTML;
+}
+
+function buildCustomers() {
+  document.getElementById('top-customers-body').innerHTML = CUSTOMERS.map((c, i) => `
+    <tr>
+      <td class="td-rank">${i+1}</td>
+      <td><div style="font-size:12.5px;color:var(--text-primary)">${c.name}</div>
+          <div style="font-size:10.5px;color:var(--text-muted)">${c.code}</div></td>
+      <td class="td-mono" style="text-align:right">${c.sales}</td>
+    </tr>`).join('');
+}
+
+function buildInventoryBars() {
+  document.getElementById('inventory-bars').innerHTML = INVENTORY.map(item => `
+    <div class="sparkline-row">
+      <div class="sparkline-label">${item.name}</div>
+      <div class="sparkline-track">
+        <div class="sparkline-fill" style="width:${item.pct}%;background:${item.color};transition:width 0.8s ease"></div>
+      </div>
+      <div class="sparkline-val" style="color:${item.pct<20?'var(--sap-red)':item.pct<50?'var(--sap-amber)':'var(--sap-green)'}">${item.pct}%</div>
+    </div>`).join('');
+}
+
+function buildRecentOrders() {
+  const cls = { Open:'pill-open', Closed:'pill-closed', Pending:'pill-pending', Partial:'pill-partial' };
+  document.getElementById('recent-orders').innerHTML = ORDERS.map(o => `
+    <div class="order-row">
+      <div class="order-id">${o.id}</div>
+      <div class="order-customer">${o.cust}</div>
+      <div class="order-amount">${o.amt}</div>
+      <div class="status-pill ${cls[o.status]}">${o.status}</div>
+    </div>`).join('');
+}
+
+function buildPOBars() {
+  document.getElementById('po-bars').innerHTML = PO_STATUS.map(p => `
+    <div class="sparkline-row">
+      <div class="sparkline-label">${p.label} (${p.count})</div>
+      <div class="sparkline-track">
+        <div class="sparkline-fill" style="width:${p.pct}%;background:${p.color};transition:width 0.8s ease"></div>
+      </div>
+      <div class="sparkline-val">${p.pct}%</div>
+    </div>`).join('');
+}
+
+/* ── RESIZE TEXTAREA ── */
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  const len = el.value.length;
+  document.getElementById('char-count').textContent = len > 0 ? len + ' chars' : '';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function quickAsk(text) {
+  document.getElementById('user-input').value = text;
+  autoResize(document.getElementById('user-input'));
+  sendMessage();
+}
+
+function timeNow() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function md(text) {
+  if (!text) return '';
+  return text
+    .replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
+      `<pre><code>${code.trim().replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>`)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<h4 style="font-size:13px;font-weight:600;margin:.8em 0 .3em;color:var(--text-primary)">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="font-size:14px;font-weight:600;margin:.8em 0 .3em">$1</h3>')
+    .replace(/^- (.+)$/gm, '<li style="margin:.2em 0 .2em 14px">$1</li>')
+    .replace(/(<li[^>]*>[\s\S]*?<\/li>\n?)+/g, m => `<ul style="margin:.4em 0">${m}</ul>`)
+    .replace(/\n\n+/g, '</p><p style="margin:.5em 0">')
+    .replace(/\n/g, '<br>');
+}
+
+function appendMsg(role, content, engine) {
+  const welcome = document.getElementById('welcome-screen');
+  if (welcome) welcome.remove();
+
+  const container = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+
+  const av = document.createElement('div');
+  av.className = 'msg-avatar ' + role;
+  av.textContent = role === 'user' ? 'AD' : 'AI';
+
+  const msgContent = document.createElement('div');
+  msgContent.className = 'msg-content';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble ' + role;
+  bubble.innerHTML = '<p style="margin:0">' + (role === 'user' ? content.replace(/</g,'&lt;') : md(content)) + '</p>';
+
+  msgContent.appendChild(bubble);
+
+  if (role === 'ai' && engine) {
+    const lbl = document.createElement('div');
+    lbl.className = 'engine-label';
+    lbl.innerHTML = `<div class="engine-label-dot"></div>${engine} · ${timeNow()}`;
+    msgContent.appendChild(lbl);
+  } else if (role === 'user') {
+    const t = document.createElement('div');
+    t.className = 'msg-time';
+    t.textContent = timeNow();
+    msgContent.appendChild(t);
+  }
+
+  row.appendChild(av);
+  row.appendChild(msgContent);
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+  return bubble;
+}
+
+function showTyping() {
+  const container = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+  row.id = 'typing-row';
+  const av = document.createElement('div');
+  av.className = 'msg-avatar ai';
+  av.textContent = 'AI';
+  const bubble = document.createElement('div');
+  bubble.className = 'typing-bubble';
+  bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+  row.appendChild(av);
+  row.appendChild(bubble);
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typing-row');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  if (busy) return;
+  const input = document.getElementById('user-input');
+  const message = input.value.trim();
+  if (!message) return;
+
+  busy = true;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('char-count').textContent = '';
+  document.getElementById('send-btn').disabled = true;
+
+  appendMsg('user', message);
+  showTyping();
+
+  try {
+    const res = await fetch(BASE_URL + '/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer dev_local_token'
+      },
+      body: JSON.stringify({ message, session_id: SESSION_ID, db_access: dbAccess, gemini_model: selectedGeminiModel }),
+    });
+
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+
+    hideTyping();
+    appendMsg('ai', data.reply || '⚠️ Empty response from server.', data.engine || 'TECH AI');
+
+  } catch (err) {
+    hideTyping();
+    appendMsg('ai',
+      `⚠️ **Connection error:** Could not reach the TECH AI server.\n\n` +
+      `Make sure the backend is running at \`${BASE_URL}\`\n\n` +
+      `*Error: ${err.message}*`,
+      'error'
+    );
+  } finally {
+    busy = false;
+    document.getElementById('send-btn').disabled = false;
+    input.focus();
+  }
+}
+
+async function clearAll() {
+  try {
+    await fetch(BASE_URL + '/clear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: SESSION_ID }),
+    });
+  } catch (_) {}
+
+  document.getElementById('messages').innerHTML = `
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" fill="white"/></svg>
+      </div>
+      <h2>Chat cleared</h2>
+      <p>Start a fresh conversation with TECH AI.</p>
+    </div>`;
+}
+
+function togglePanel() {
+  const panel = document.getElementById('right-panel');
+  const icon  = document.getElementById('panel-toggle-icon');
+  const collapsed = panel.classList.toggle('collapsed');
+  icon.innerHTML = collapsed
+    ? '<polyline points="15 18 9 12 15 6"/>'
+    : '<polyline points="9 18 15 12 9 6"/>';
+  document.getElementById('panel-toggle-btn').title = collapsed ? 'Show panel' : 'Hide panel';
+}
+
+document.getElementById('user-input').focus();
+</script>
+</body>
+</html>

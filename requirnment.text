@@ -1,0 +1,36 @@
+# ══════════════════════════════════════════════════════════════════════════════
+#  TECH AI — SAP Business One AI Assistant
+#  Requirements File
+#  Install: pip install -r requirements.txt
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── AI / LLM APIs ─────────────────────────────────────────────────────────────
+google-genai                # Gemini API (general chat, web search grounding)
+groq                        # Groq API (NL→SQL for SAP B1 database queries)
+
+# ── Web Server / API ──────────────────────────────────────────────────────────
+fastapi                     # REST API framework
+uvicorn                     # ASGI server to run FastAPI
+pydantic                    # Request/response data validation (bundled with FastAPI)
+
+# ── Database ──────────────────────────────────────────────────────────────────
+pyodbc                      # MS SQL Server connection via ODBC Driver 17
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  NOTES:
+#
+#  1. Python 3.10+ is REQUIRED (code uses "str | None" union syntax)
+#
+#  2. ODBC Driver 17 for SQL Server must be installed SEPARATELY — it is NOT
+#     a pip package. Download from:
+#     https://aka.ms/odbc17
+#
+#  3. Do NOT install "google-generativeai" — that is the old deprecated SDK.
+#     This project uses the NEW "google-genai" package.
+#
+#  4. Quick install command:
+#     pip install -r requirements.txt
+#
+#  5. Verify install:
+#     python -c "from google import genai; from groq import Groq; import pyodbc; import fastapi; print('All packages OK')"
+# ══════════════════════════════════════════════════════════════════════════════
